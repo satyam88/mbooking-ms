@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dev-mbooking-ms-ingress
+  namespace: dev
+  labels:
+    env: dev
+    app: mbooking-ms
+    layer: frontend
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: mbooking-ms.connectingclouds.in
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: dev-mbooking-ms-service
+                port:
+                  number: 8080

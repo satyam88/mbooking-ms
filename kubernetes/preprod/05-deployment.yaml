@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-mbooking-ms-deployment
+  namespace: dev
+  labels:
+    app: mbooking-ms
+    env: dev
+spec:
+  replicas: 3
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 100%
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: mbooking-ms
+      env: dev
+  template:
+    metadata:
+      labels:
+        app: mbooking-ms
+        env: dev
+    spec:
+      containers:
+        - name: mbooking-ms-ms
+          image: 559220132560.dkr.ecr.ap-south-1.amazonaws.com/mbooking-ms-ms:latest
+          resources:
+            requests:
+              memory: 50Mi
+              cpu: 50m
+            limits:
+              memory: 100Mi
+              cpu: 100m
+          ports:
+            - containerPort: 8080
+              name: api
+          volumeMounts:
+            - mountPath: /app/config
+              name: application-config
+      volumes:
+        - name: application-config
+          configMap:
+            name: dev-mbooking-ms-application-config
