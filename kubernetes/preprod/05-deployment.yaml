@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dev-mbooking-ms-deployment
-  namespace: dev
+  name: preprod-mbooking-ms-deployment
+  namespace: preprod
   labels:
     app: mbooking-ms
-    env: dev
+    env: preprod
 spec:
-  replicas: 3
+  replicas: 1
   strategy:
     rollingUpdate:
       maxUnavailable: 25%
@@ -16,16 +16,16 @@ spec:
   selector:
     matchLabels:
       app: mbooking-ms
-      env: dev
+      env: preprod
   template:
     metadata:
       labels:
         app: mbooking-ms
-        env: dev
+        env: preprod
     spec:
       containers:
-        - name: mbooking-ms-ms
-          image: 559220132560.dkr.ecr.ap-south-1.amazonaws.com/mbooking-ms-ms:latest
+        - name: mbooking-ms
+          image: 533267238276.dkr.ecr.ap-south-1.amazonaws.com/mbooking-ms:<latest>
           resources:
             requests:
               memory: 50Mi
@@ -42,4 +42,4 @@ spec:
       volumes:
         - name: application-config
           configMap:
-            name: dev-mbooking-ms-application-config
+            name: preprod-mbooking-ms-application-config

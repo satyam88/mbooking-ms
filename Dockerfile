@@ -1,25 +1,23 @@
-FROM tomcat:9.0.52-jre11-openjdk-slim
+# Use official Tomcat 9 with Java 21 pre-installed
+FROM tomcat:9.0.82-jdk21-temurin
 
-# Install Java 17
-RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk && \
-    apt-get clean;
+# Set maintainer label (optional but good practice)
+LABEL maintainer="your.email@example.com"
 
-# Set Java 17 as the default Java version
-RUN update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java && \
-    update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+# Remove default ROOT app (optional, keeps container clean)
+RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
-# Copy the JAR file into the Tomcat webapps directory
-COPY ./target/mbooking-ms*.war /usr/local/tomcat/webapps
+# Create a user for running the application
+RUN useradd -m mbooking-ms
 
-# Expose port 8080
+# Copy your WAR file into the webapps directory
+COPY ./target/mbooking-ms*.war /usr/local/tomcat/webapps/
+
+# Expose the default Tomcat port
 EXPOSE 8080
 
-# Set the user
-USER fusion
+# Set the user to 'mbooking-ms' for security
+USER mbooking-ms
 
-# Set the working directory
-WORKDIR /usr/local/tomcat/webapps
-
-# Start Tomcat
+# Default command to run Tomcat
 CMD ["catalina.sh", "run"]
