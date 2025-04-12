@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: mbooking-ms-ms
-          image: 559220132560.dkr.ecr.ap-south-1.amazonaws.com/mbooking-ms-ms:latest
+          image: 559220132560.dkr.ecr.ap-south-1.amazonaws.com/mbooking-ms:latest
           resources:
             requests:
               memory: 50Mi
