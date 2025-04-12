@@ -69,6 +69,17 @@ pipeline {
                         echo 'Docker Image Pushed to ECR Successfully!'
                     }
                 }
+
+                stage('Cleanup Local Docker Images') {
+                    steps {
+                        echo "Cleaning up local Docker images"
+                        sh """
+                            docker rmi ${ECR_URL}/mbooking-ms:${DEV_IMAGE_TAG} || true
+                            docker image prune -f
+                        """
+                        echo "Local Docker images cleaned up successfully"
+                    }
+                }
             }
         }
 
@@ -96,9 +107,9 @@ pipeline {
                         sh "docker tag ${sourceImage} ${targetImage}"
                         echo "Pushing Target Image to ECR: ${targetImage}"
                         sh "docker push ${targetImage}"
+                        echo "Cleaning Up Local Images"
+                        sh "docker rmi ${sourceImage} ${targetImage} || true"
                     }
-                    echo "Cleaning Up Local Images"
-                    sh "docker rmi ${sourceImage} ${targetImage} || true"
                 }
             }
         }
