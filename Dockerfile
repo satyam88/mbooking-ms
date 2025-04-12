@@ -2,12 +2,12 @@ FROM tomcat:9.0.52-jre11-openjdk-slim
 
 # Install dependencies and Java 21 from Adoptium
 RUN apt-get update && \
-    apt-get install -y wget tar gnupg ca-certificates && \
+    apt-get install -y wget tar ca-certificates && \
     mkdir -p /opt/java && \
-    wget https://github.com/adoptium/temurin21-binaries/releases/latest/download/OpenJDK21U-jdk_x64_linux_hotspot.tar.gz -O /tmp/java21.tar.gz && \
+    wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.6%2B7/OpenJDK21U-jdk_x64_linux_hotspot_21.0.6_7.tar.gz -O /tmp/java21.tar.gz && \
     tar -xzf /tmp/java21.tar.gz -C /opt/java && \
     rm /tmp/java21.tar.gz && \
-    ln -s /opt/java/* /opt/java/latest
+    ln -s /opt/java/jdk-21.0.6+7 /opt/java/latest
 
 # Set JAVA_HOME and update PATH
 ENV JAVA_HOME=/opt/java/latest
