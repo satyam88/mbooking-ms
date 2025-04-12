@@ -1,41 +1,23 @@
-FROM tomcat:9.0.52-jre11-openjdk-slim
+# Use official Tomcat 9 with Java 21 pre-installed
+FROM tomcat:9.0.82-jdk21-temurin
 
-# Install dependencies and Java 21 from Adoptium
-RUN apt-get update && \
-    apt-get install -y wget tar ca-certificates && \
-    mkdir -p /opt/java && \
-    wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.6%2B7/OpenJDK21U-jdk_x64_linux_hotspot_21.0.6_7.tar.gz -O /tmp/java21.tar.gz && \
-    tar -xzf /tmp/java21.tar.gz -C /opt/java && \
-    rm /tmp/java21.tar.gz && \
-    ln -s /opt/java/jdk-21.0.6+7 /opt/java/latest
+# Set maintainer label (optional but good practice)
+LABEL maintainer="your.email@example.com"
 
-# Set JAVA_HOME and update PATH
-ENV JAVA_HOME=/opt/java/latest
-ENV PATH="${JAVA_HOME}/bin:${PATH}"
+# Remove default ROOT app (optional, keeps container clean)
+RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
-# Set Java 21 as the default
-RUN update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 1 && \
-    update-alternatives --install /usr/bin/javac javac $JAVA_HOME/bin/javac 1 && \
-    update-alternatives --set java $JAVA_HOME/bin/java && \
-    update-alternatives --set javac $JAVA_HOME/bin/javac
-
-# Create non-root user
+# Create a user for running the application
 RUN useradd -m mbooking-ms
 
-# Copy the WAR file into the Tomcat webapps directory
-COPY ./target/mbooking-ms*.war /usr/local/tomcat/webapps
+# Copy your WAR file into the webapps directory
+COPY ./target/mbooking-ms*.war /usr/local/tomcat/webapps/
 
-# Fix permissions for non-root user
-RUN chown -R mbooking-ms:mbooking-ms /usr/local/tomcat
-
-# Switch to non-root user
-USER mbooking-ms
-
-# Set the working directory
-WORKDIR /usr/local/tomcat/webapps
-
-# Expose port
+# Expose the default Tomcat port
 EXPOSE 8080
 
-# Start Tomcat
+# Set the user to 'mbooking-ms' for security
+USER mbooking-ms
+
+# Default command to run Tomcat
 CMD ["catalina.sh", "run"]
