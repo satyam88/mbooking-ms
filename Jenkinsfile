@@ -92,7 +92,7 @@ pipeline {
             }
             steps {
                 script {
-                    def targetTag = BRANCH_NAME == 'preprod' ? PREPROD_IMAGE_TAG : "prod-mbooking-ms-v.1.${BUILD_NUMBER}"
+                    def targetTag = BRANCH_NAME == 'prod' ? PREPROD_IMAGE_TAG : "prod-mbooking-ms-v.1.${BUILD_NUMBER}"
                     def sourceTag = BRANCH_NAME == 'preprod' ? DEV_IMAGE_TAG : PREPROD_IMAGE_TAG
                     def sourceImage = "${ECR_URL}/mbooking-ms:${sourceTag}"
                     def targetImage = "${ECR_URL}/mbooking-ms:${targetTag}"
